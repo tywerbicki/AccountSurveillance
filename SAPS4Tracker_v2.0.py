@@ -740,4 +740,4 @@ if not EXIT:
     except Exception:
         print_exc()
     finally:
-        ReleaseProgramLock() #release program lock
+        ReleaseProgramLock() 
