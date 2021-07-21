@@ -1,5 +1,5 @@
-depositPath = '//ABCGYAPPFS01/Common/Treasury/4.  CASH MANAGEMENT/Data/SAPS4 Tracking/ExpectedOutflows_vs_Register_v2.xlsx' #Database we're updating
-dependenciesDir = '//ABCGYAPPFS01/Common/Treasury/4.  CASH MANAGEMENT/Data/SAPS4 Tracking/SAPTrackerDependencies' #Dependencies for the program on the corporate drive
+depositPath = ##########
+dependenciesDir = ##########
 
 from os import chmod, getcwd, path, mkdir, remove, listdir
 from stat import S_IWUSR, S_IWOTH, S_IRUSR, S_IROTH
@@ -16,18 +16,17 @@ from win32com.client import Dispatch as win32_Dispatch
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
-#Function Definitions
 def AcquireProgramLock():
     '''
     Acquires the program lock so that another user cannot update the database simultaneously.
     '''
-    chmod(dependenciesDir + '/Lock.txt', S_IWUSR | S_IWOTH) #make file writable
+    chmod(dependenciesDir + '/Lock.txt', S_IWUSR | S_IWOTH) 
     try:
         with open(dependenciesDir + '/Lock.txt', 'r+') as f:
             text = f.read()
             if text == 'Program Unlocked':
                 f.seek(0)
-                f.write('Program Locked') #acquire the lock
+                f.write('Program Locked') 
                 f.truncate()
             elif text == 'Program Locked':
                 print('Another User is Currently Running This Program. Please Try Again Shortly.')
@@ -36,16 +35,16 @@ def AcquireProgramLock():
                 sleep(2)
                 exit()
     finally:
-        chmod(dependenciesDir + '/Lock.txt', S_IRUSR | S_IROTH) #make file read only
+        chmod(dependenciesDir + '/Lock.txt', S_IRUSR | S_IROTH) 
 
 def ReleaseProgramLock():
     '''
     Releases the program lock when finished so that another user can access the program.
     '''
-    chmod(dependenciesDir + '/Lock.txt', S_IWUSR | S_IWOTH) #make file writable
+    chmod(dependenciesDir + '/Lock.txt', S_IWUSR | S_IWOTH) 
     with open(dependenciesDir + '/Lock.txt', 'w') as f:
-        f.write("Program Unlocked") #release the lock
-    chmod(dependenciesDir + '/Lock.txt', S_IRUSR | S_IROTH) #make file read only
+        f.write("Program Unlocked") 
+    chmod(dependenciesDir + '/Lock.txt', S_IRUSR | S_IROTH) 
     return
 
 def AcquireDates(numDelta = 0):
@@ -57,18 +56,18 @@ def AcquireDates(numDelta = 0):
     '''
     rawDate = date.today()
     currentDate = (rawDate - timedelta(numDelta)).strftime("%m/%d/%Y")
-    if (rawDate - timedelta(numDelta)).weekday() < 2: #check if dates will fall on the weekend
-        propRecvDate_DB = (rawDate - timedelta(4 + numDelta)).strftime("%m/%d/%Y") #assigning the date the proposal for the database is received on (2 business days prior)
+    if (rawDate - timedelta(numDelta)).weekday() < 2: 
+        propRecvDate_DB = (rawDate - timedelta(4 + numDelta)).strftime("%m/%d/%Y") 
     else:
         propRecvDate_DB = (rawDate - timedelta(2 + numDelta)).strftime("%m/%d/%Y")
 
     if (rawDate - timedelta(numDelta)).weekday() == 0:
-        priorBusinessDay = (rawDate - timedelta(3 + numDelta)).strftime("%m/%d/%Y") #assigning the date of the prior business day
+        priorBusinessDay = (rawDate - timedelta(3 + numDelta)).strftime("%m/%d/%Y") 
     else:
         priorBusinessDay = (rawDate - timedelta(1 + numDelta)).strftime("%m/%d/%Y")
 
     if (rawDate - timedelta(numDelta)).weekday() == 4:
-        propFocDate = (rawDate + timedelta(3 - numDelta)).strftime("%m/%d/%Y") #assigning the date the proposal is forecasting payments for (next business day)
+        propFocDate = (rawDate + timedelta(3 - numDelta)).strftime("%m/%d/%Y") 
     else:
         propFocDate = (rawDate + timedelta(1 - numDelta)).strftime("%m/%d/%Y")
 
@@ -84,7 +83,7 @@ def UpdateInbox():
         analyzeMessage = False
         if message.Class == 43:
             if message.SenderEmailType == 'EX':
-                if message.Sender.GetExchangeUser().PrimarySmtpAddress == 'SAPS4_Payments@nutrien.com': #check if email is sent from SAP S4
+                if message.Sender.GetExchangeUser().PrimarySmtpAddress == ##########: 
                     analyzeMessage = True
         return analyzeMessage
 
@@ -114,40 +113,40 @@ def UpdateInbox():
     inbox = outlook.GetDefaultFolder(6)
 
     inboxFolders = {folder.Name for folder in inbox.Folders}
-    if 'SAP Tracking Program' in inboxFolders:
-        mainFolder = inbox.Folders.Item('SAP Tracking Program')
+    if ########## in inboxFolders:
+        mainFolder = inbox.Folders.Item(##########)
     else:
-        inbox.Folders.Add('SAP Tracking Program')
-        mainFolder = inbox.Folders.Item('SAP Tracking Program')
-        print("Created Folder In Inbox Titled: 'SAP Tracking Program'")
+        inbox.Folders.Add(##########)
+        mainFolder = inbox.Folders.Item(##########)
+        print("Created Folder In Inbox Titled: ##########")
 
     mainFolders = {folder.Name for folder in mainFolder.Folders}
-    if 'SAP S4 Payments' in mainFolders:
-        SAP_Folder = mainFolder.Folders.Item('SAP S4 Payments')
+    if ########## in mainFolders:
+        SAP_Folder = mainFolder.Folders.Item(##########)
     else:
-        mainFolder.Folders.Add('SAP S4 Payments')
-        SAP_Folder = mainFolder.Folders.Item('SAP S4 Payments')
-        print("Created Folder In 'SAP Tracking Program' Titled: 'SAP S4 Payments'")
-    if 'Treasura Outflows Reports' in mainFolders:
-        Treas_Folder = mainFolder.Folders.Item('Treasura Outflows Reports')
+        mainFolder.Folders.Add(##########)
+        SAP_Folder = mainFolder.Folders.Item(##########)
+        print("Created Folder In ########## Titled: ##########")
+    if ########## in mainFolders:
+        Treas_Folder = mainFolder.Folders.Item(##########)
     else:
-        mainFolder.Folders.Add('Treasura Outflows Reports')
-        Treas_Folder = mainFolder.Folders.Item('Treasura Outflows Reports')
-        print("Created Folder In 'SAP Tracking Program' Titled: 'Treasura Outflows Reports'")
-    if 'Proposed Daily Outflows' in mainFolders:
-        proposedOutflowFolder = mainFolder.Folders.Item('Proposed Daily Outflows')
+        mainFolder.Folders.Add(##########)
+        Treas_Folder = mainFolder.Folders.Item(##########)
+        print("Created Folder In ########## Titled: ##########")
+    if ########## in mainFolders:
+        proposedOutflowFolder = mainFolder.Folders.Item(##########)
     else:
-        mainFolder.Folders.Add('Proposed Daily Outflows')
-        proposedOutflowFolder = mainFolder.Folders.Item('Proposed Daily Outflows')
-        print("Created Folder In 'SAP Tracking Program' Titled: 'Proposed Daily Outflows'")
+        mainFolder.Folders.Add(##########)
+        proposedOutflowFolder = mainFolder.Folders.Item(##########)
+        print("Created Folder In ########## Titled: ##########")
 
     inbmessages = inbox.Items
-    inbmessages.sort("[ReceivedTime]", True) #sorting the inbox container from newest to oldest
+    inbmessages.sort("[ReceivedTime]", True) 
     inbmessage = inbmessages.GetFirst()
     nonTargetEmails = 0
     emailCounter = 0
 
-    while emailCounter < 200: #will sort through a maximum of 200 emails in the inbox
+    while emailCounter < 200: 
         if not isinstance(inbmessage, type(None)):
             emailCounter += 1
             analyzedEmail = False
@@ -155,20 +154,20 @@ def UpdateInbox():
             if AnalyzeSAPS4Email(inbmessage):
                 inbmessage.Unread = True ; analyzedEmail = True
                 inbmessage.Move(SAP_Folder)
-                print(f"MOVED EMAIL ({inbmessage.subject}) to SAP S4 Payments")
+                print(f"MOVED EMAIL ({inbmessage.subject}) to ##########")
 
             elif AnalyzeTreasuraEmail(inbmessage):
                 inbmessage.Unread = True ; analyzedEmail = True
                 inbmessage.Move(Treas_Folder)
-                print(f"MOVED EMAIL ({inbmessage.subject}) to Treasura Outflows Reports")
+                print(f"MOVED EMAIL ({inbmessage.subject}) to ##########")
 
             elif MoveProposedOutflowEmail(inbmessage):
                 inbmessage.Unread = True ; analyzedEmail = True
                 inbmessage.Move(proposedOutflowFolder)
-                print(f"MOVED EMAIL ({inbmessage.subject}) to Proposed Daily Outflows")
+                print(f"MOVED EMAIL ({inbmessage.subject}) to ##########")
 
             if analyzedEmail:
-                inbmessages = inbox.Items #resetting the inbox container, as it will be modified from previously moving an email
+                inbmessages = inbox.Items 
                 inbmessages.sort("[ReceivedTime]", True)
                 inbmessage = inbmessages.GetFirst()
                 for _ in range(nonTargetEmails):
@@ -259,7 +258,7 @@ def InitializeApplication():
                     sleep(2)
                     exit()
 
-            return AcquireDates(newday) #will return dates corresponding with newday as the value of timedelta, allowing the program to be ran on a day in the past.
+            return AcquireDates(newday) 
 
 def PropRegTreasFolderCleanup(currentDate, propDir, regDir, treasDir):
     '''
@@ -268,17 +267,17 @@ def PropRegTreasFolderCleanup(currentDate, propDir, regDir, treasDir):
     Prevents hundreds of files accumulating in these directories and taking up large amounts
     of space on the corporate drive.
     '''
-    if datetime.strptime(currentDate, "%m/%d/%Y").weekday() > 0: #only want to proceed if it is monday - don't need to be deleting files every day.
+    if datetime.strptime(currentDate, "%m/%d/%Y").weekday() > 0: 
         return
 
     def FolderCleaner(directory, fileNames):
         for file in fileNames:
             filePath = directory + '/' + file
             fileDate = datetime.fromtimestamp(path.getmtime(filePath))
-            if (datetime.today() - fileDate).total_seconds() > 60*60*24*31: #check if the file was last modified prior to 31 days ago.
-                remove(filePath) #delete the file
+            if (datetime.today() - fileDate).total_seconds() > 60*60*24*31: 
+                remove(filePath) 
 
-    propFileNames = listdir(propDir) #list of the filenames in the directory where the proposals are being stored.
+    propFileNames = listdir(propDir) 
     regFileNames = listdir(regDir)
     treasFileNames = listdir(treasDir)
     FolderCleaner(propDir, propFileNames)
@@ -296,13 +295,13 @@ def AcquireFilesFromOutlook(priorBusinessDay, currentDate, regDir, treasDir):
 
     outlook = win32_Dispatch('outlook.application').GetNamespace('MAPI')
     inbox = outlook.GetDefaultFolder(6)
-    SAP_Folder = inbox.Folders.Item('SAP Tracking Program').Folders.Item('SAP S4 Payments')
+    SAP_Folder = inbox.Folders.Item(##########).Folders.Item(##########)
     SAP_messages = SAP_Folder.Items
     SAP_messages.sort("[ReceivedTime]", True)
-    Treas_Folder = inbox.Folders.Item('SAP Tracking Program').Folders.Item('Treasura Outflows Reports')
+    Treas_Folder = inbox.Folders.Item(##########).Folders.Item(##########)
     Treas_messages = Treas_Folder.Items
     Treas_messages.sort("[ReceivedTime]", True)
-    proposedOutflowFolder = inbox.Folders.Item('SAP Tracking Program').Folders.Item('Proposed Daily Outflows')
+    proposedOutflowFolder = inbox.Folders.Item(##########).Folders.Item(##########)
     proposedOutflow_messages = proposedOutflowFolder.Items
     proposedOutflow_messages.sort("[ReceivedTime]", True)
 
@@ -368,11 +367,11 @@ def SAPFileDetector(directory, date, reportType):
             files_needed.append(file)
     if len(files_needed) > 0:
         return files_needed
-    else: #sometimes there will be no files for analysis. This could be the result of the proposals not being sent yet, or that the next business day is a holiday.
-        cont = input(f"No {reportType}s Found For {date}.  Do You Wish To Continue? (y/n): ") #want to continue if no proposals due to holiday
+    else: 
+        cont = input(f"No {reportType}s Found For {date}.  Do You Wish To Continue? (y/n): ") 
         if cont == 'y':
             return files_needed
-        elif cont == 'n': #do not want to continue if the proposals have yet to be sent. Rerun the program manually after the proposals have been sent.
+        elif cont == 'n': 
             print('Program Exiting Safely.')
             sleep(2)
             exit()
@@ -389,14 +388,14 @@ def TreasuraFileDetector(treasDir, treasFilenames, currentDate):
     '''
     def CheckDate (date, directory, fileName):
         fileDate = datetime.fromtimestamp(path.getmtime(directory + '\\' + fileName)).strftime("%m/%d/%Y")
-        return True if date == fileDate else False #comparing the date to the date the treasura report was generated
+        return True if date == fileDate else False 
 
     fileNeeded = None
     for file in treasFilenames:
         if CheckDate(currentDate, treasDir, file):
             fileNeeded = file
     if fileNeeded == None:
-        raise FileNotFoundError('Please Wait for Incoming Data from Treasura') #The treasura report should always come, so this is moreso for debugging purposes.
+        raise FileNotFoundError('Please Wait for Incoming Data from Treasura')
     else:
         return treasDir + '\\' + fileNeeded
 
@@ -468,8 +467,8 @@ def DataAgreggator_F(companyList, currencyList, presentDayProposals, propDir, pr
         pooledPropOutflows = zeros(3, float64)
         analyzedNames = ""
         for file in presentDayProposals:
-            data = read_excel(propDir + "\\" + file) #read in the proposal
-            data.columns = NameStripper(data.columns) #strip whitespace from columns
+            data = read_excel(propDir + "\\" + file) 
+            data.columns = NameStripper(data.columns) 
             counter = 0
             for companyCode, currency in zip(companyList, currencyList):
                 tempData = data[CompanyFilter(data, companyCode, currency)]
@@ -483,12 +482,12 @@ def DataAgreggator_F(companyList, currencyList, presentDayProposals, propDir, pr
                     pooledPropOutflows[index] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
 
                 counter += 1
-            analyzedNames += '\t' + file + '\n' #keep track of the name of the proposal analyzed.
+            analyzedNames += '\t' + file + '\n' 
 
         return pooledPropOutflows, analyzedNames
 
-    pooledPropOutflows, analyzedNames = PropDataScraper_F(companyList, currencyList, presentDayProposals, propDir, propFocDate) #acquire proposal data
-    structures = ["Agrium US Inc", "NASC CAD", "NASC USD"]
+    pooledPropOutflows, analyzedNames = PropDataScraper_F(companyList, currencyList, presentDayProposals, propDir, propFocDate) 
+    structures = ##########
     messageForEmail = "\n"
     for struc, pool in zip(structures, pooledPropOutflows):
         messageForEmail += '\t' + struc + ": " + ToVisualFormat(pool) + '\n\n'
@@ -580,12 +579,12 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
         dataForDataBase[:, 1] = full((8,), regRecvDate, dtype = object)
         dataForDataBase[:, [2, 3, 4]] = zeros((8, 3), dtype = float64)
 
-        for file in regFlaggedFiles: #now we are analyzing registers
-            data = read_excel(regDir + '/' + file, sheet_name = 2) #usually data is on second sheet
+        for file in regFlaggedFiles: 
+            data = read_excel(regDir + '/' + file, sheet_name = 2) 
             if 'Company Code' in data.columns:
                 pass
-            else: #Sometimes SAP will put the data on the first sheet. This accounts for that.
-                data = read_excel(regDir + '/' + file, sheet_name = 1) #if this line executes, it means the data is on the first sheet
+            else: 
+                data = read_excel(regDir + '/' + file, sheet_name = 1) 
                 assert 'Company Code' in data.columns, "'Company Code' Column Not Found in " + file
 
             data.columns = NameStripper(data.columns)
@@ -629,30 +628,29 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
         return dataForDataBase
 
     finalData = empty([8, 16], dtype = object)
-    finalData[:, :9] = PropDataScraper_DB(companyList, currencyList, propFlaggedFiles, propDir, propRecvDate) #get proposal data for database
-    finalData[:, [1, 3, 9, 10, 11]] = RegDataScraper(companyList, currencyList, regFlaggedFiles, regDir, regRecvDate) #get register data for database
-    finalData[:, 12:] = TreasDataScraper(accountList, treasFile, regRecvDate) #get treasura data for database
+    finalData[:, :9] = PropDataScraper_DB(companyList, currencyList, propFlaggedFiles, propDir, propRecvDate) 
+    finalData[:, [1, 3, 9, 10, 11]] = RegDataScraper(companyList, currencyList, regFlaggedFiles, regDir, regRecvDate) 
+    finalData[:, 12:] = TreasDataScraper(accountList, treasFile, regRecvDate) 
 
     return finalData
 
 def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, propFocDate, currentDate, priorBusinessDay, propRecvDate_DB):
 
-    propFilenames = listdir(propDir) #get filenames of all proposals.
-    regFilenames = listdir(regDir) #get filenames of all registers.
-    treasFilenames = listdir(treasDir) #get filenames of all AP EFT reports.
+    propFilenames = listdir(propDir) 
+    regFilenames = listdir(regDir) 
+    treasFilenames = listdir(treasDir) 
 
-    companyList = [4303, 4304, 1050, 1052, 1400, 1050, 1052, 1400] #companies and currencies occupying 2 lists such that the lists can be zipped over.
+    companyList = ##########
     currencyList = ['USD', 'USD', 'CAD', 'CAD', 'CAD', 'USD', 'USD', 'USD']
-    accountList = ['3274750', '3782745', '129890357618', '476961509713', '129890225916', '129890307815', '476761544411', '129890296716']
+    accountList = ##########
 
-    #Daily Outflow Proposals Program Implementation
-    presentDayProposals = SAPFileDetector(propFilenames, propFocDate, 'Proposal') #get filenames of proposals (current day) to analyze for proposed daily outflows.
-    messageForEmail, analyzedNames = DataAgreggator_F(companyList, currencyList, presentDayProposals, propDir, propFocDate) #get data for proposed daily outflows.
+    presentDayProposals = SAPFileDetector(propFilenames, propFocDate, 'Proposal') 
+    messageForEmail, analyzedNames = DataAgreggator_F(companyList, currencyList, presentDayProposals, propDir, propFocDate) 
     print("Daily Proposed Outflows Acquired") ; print()
 
     names = []
     emailAdresses = []
-    with open(dependenciesDir + '/EmailList.txt', 'r') as f: #acquire distribution list from emaillist.txt
+    with open(dependenciesDir + '/EmailList.txt', 'r') as f: 
         namesAndEmails = f.read().split('\n')
         for pair in namesAndEmails:
             name, emailAdress = pair.split(': ')
@@ -661,7 +659,7 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
 
     outlook = win32_Dispatch('outlook.application')
     for email, name in zip(emailAdresses, names):
-        newEmail = outlook.CreateItem(0) #create a new email.
+        newEmail = outlook.CreateItem(0) 
         newEmail.Subject = f"Proposed Daily Outflows for {propFocDate}"
         newEmail.Body = f'''Hello {name},
 
@@ -677,24 +675,20 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
 
     Thank You.
     '''
-        newEmail.To = email #specify who the email is to be sent to.
-        newEmail.Send() #send the email.
+        newEmail.To = email 
+        newEmail.Send() 
 
+    propFlaggedFiles_DB = SAPFileDetector(propFilenames, priorBusinessDay, 'Proposal') 
+    regFlaggedFiles = SAPFileDetector(regFilenames, priorBusinessDay, 'Register') 
+    treasFile = TreasuraFileDetector(treasDir, treasFilenames, currentDate) 
+    finalData = DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles_DB, propDir, propRecvDate_DB, regFlaggedFiles, regDir, priorBusinessDay, treasFile)
 
-    #Serveillance Database Program Implementation
-    propFlaggedFiles_DB = SAPFileDetector(propFilenames, priorBusinessDay, 'Proposal') #get filenames of proposals (previous previous business day) to analyze to update the database.
-    regFlaggedFiles = SAPFileDetector(regFilenames, priorBusinessDay, 'Register') #get filenames of registers (previous business day) to analyze to update the database.
-    treasFile = TreasuraFileDetector(treasDir, treasFilenames, currentDate) #get filename of AP EFT report (for previous business day, sent on current day) to analyze to update the database.
-    finalData = DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles_DB, propDir, propRecvDate_DB, regFlaggedFiles, regDir, priorBusinessDay, treasFile) #get data for the database
-
-    #Update the Database
-    chmod(depositPath, S_IWUSR | S_IWOTH) #change permissions of the database so it can be written to.
+    chmod(depositPath, S_IWUSR | S_IWOTH) 
     DATABASE_WORKBOOK = load_workbook(depositPath)
     dataSheet = DATABASE_WORKBOOK['Database']
     dataSheet.insert_rows(idx = 2, amount = 9)
     for j in range(finalData.shape[1]):
 
-        #Built-in formats: https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/styles/numbers.html
         cellFormat = 'General'
         if j < 2:
             pass
@@ -712,12 +706,12 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
             cell.number_format = cellFormat
 
     DATABASE_WORKBOOK.save(depositPath)
-    chmod(depositPath, S_IRUSR | S_IROTH) #make database read only again.
+    chmod(depositPath, S_IRUSR | S_IROTH) 
 
-    chmod(dependenciesDir + '/DatabaseUpdateDates.txt', S_IWUSR | S_IWOTH) #make updatedates.txt writable.
+    chmod(dependenciesDir + '/DatabaseUpdateDates.txt', S_IWUSR | S_IWOTH) 
     with open(dependenciesDir + '/DatabaseUpdateDates.txt', 'a') as f:
-        f.write(currentDate + ';') #write the current day in the .txt to let the program know in the future that it ran on today's date.
-    chmod(dependenciesDir + '/DatabaseUpdateDates.txt', S_IRUSR | S_IROTH) #make updatedates.txt read only.
+        f.write(currentDate + ';') 
+    chmod(dependenciesDir + '/DatabaseUpdateDates.txt', S_IRUSR | S_IROTH) 
 
     print("Surveillance Database Updated Successfully")
 
@@ -726,21 +720,21 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
 EXIT = False
 try:
     UpdateInbox()
-except Exception: #for debugging
-    print_exc() #print the traceback
-    EXIT = True #don't want to update the database
+except Exception: 
+    print_exc() 
+    EXIT = True 
 
-if not EXIT: #if the program threw an error, don't want to run this block
+if not EXIT: 
     try:
         wd = getcwd()
-        propDir = dependenciesDir + '/Payments_Proposed' #directory where the proposals are stored
-        regDir = dependenciesDir + '/Payments_Registered' #directory where the registers are stored
-        treasDir = dependenciesDir + '/Treasura_Outflows_dloads' #directory where the treasura outflows reports are stored
-        propFocDate, currentDate, priorBusinessDay, propRecvDate_DB = InitializeApplication() #ascertain what day the user wants to run the program for.
-        AcquireProgramLock() #get the program lock
-        AcquireFilesFromOutlook(priorBusinessDay, currentDate, regDir, treasDir) #download proposals, registers and AP EFT report
-        ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, propFocDate, currentDate, priorBusinessDay, propRecvDate_DB) #run program
-        PropRegTreasFolderCleanup(currentDate, propDir, regDir, treasDir) #clean up directories where files are being deposited.
+        propDir = dependenciesDir + '/Payments_Proposed' 
+        regDir = dependenciesDir + '/Payments_Registered' 
+        treasDir = dependenciesDir + '/Treasura_Outflows_dloads' 
+        propFocDate, currentDate, priorBusinessDay, propRecvDate_DB = InitializeApplication() 
+        AcquireProgramLock() 
+        AcquireFilesFromOutlook(priorBusinessDay, currentDate, regDir, treasDir) 
+        ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, propFocDate, currentDate, priorBusinessDay, propRecvDate_DB) 
+        PropRegTreasFolderCleanup(currentDate, propDir, regDir, treasDir) 
     except SystemExit:
         print('Program Terminated')
     except Exception:
