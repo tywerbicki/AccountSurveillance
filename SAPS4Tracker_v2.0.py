@@ -1,5 +1,5 @@
-depositPath = ##########
-dependenciesDir = ##########
+depositPath = '$$$$$$$$$$'
+dependenciesDir = '$$$$$$$$$$'
 
 from os import chmod, getcwd, path, mkdir, remove, listdir
 from stat import S_IWUSR, S_IWOTH, S_IRUSR, S_IROTH
@@ -16,35 +16,36 @@ from win32com.client import Dispatch as win32_Dispatch
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
+#Function Definitions
 def AcquireProgramLock():
     '''
     Acquires the program lock so that another user cannot update the database simultaneously.
     '''
-    chmod(dependenciesDir + '/Lock.txt', S_IWUSR | S_IWOTH) 
+    chmod(dependenciesDir + '$$$$$$$$$$', S_IWUSR | S_IWOTH) 
     try:
-        with open(dependenciesDir + '/Lock.txt', 'r+') as f:
+        with open(dependenciesDir + '$$$$$$$$$$', 'r+') as f:
             text = f.read()
-            if text == 'Program Unlocked':
+            if text == '$$$$$$$$$$':
                 f.seek(0)
-                f.write('Program Locked') 
+                f.write('$$$$$$$$$$') 
                 f.truncate()
-            elif text == 'Program Locked':
+            elif text == '$$$$$$$$$$':
                 print('Another User is Currently Running This Program. Please Try Again Shortly.')
                 sleep(3)
                 print("Program Exiting Safely.")
                 sleep(2)
                 exit()
     finally:
-        chmod(dependenciesDir + '/Lock.txt', S_IRUSR | S_IROTH) 
+        chmod(dependenciesDir + '$$$$$$$$$$', S_IRUSR | S_IROTH) #make file read only
 
 def ReleaseProgramLock():
     '''
     Releases the program lock when finished so that another user can access the program.
     '''
-    chmod(dependenciesDir + '/Lock.txt', S_IWUSR | S_IWOTH) 
-    with open(dependenciesDir + '/Lock.txt', 'w') as f:
-        f.write("Program Unlocked") 
-    chmod(dependenciesDir + '/Lock.txt', S_IRUSR | S_IROTH) 
+    chmod(dependenciesDir + '$$$$$$$$$$', S_IWUSR | S_IWOTH) 
+    with open(dependenciesDir + '$$$$$$$$$$', 'w') as f:
+        f.write('$$$$$$$$$$') 
+    chmod(dependenciesDir + '$$$$$$$$$$', S_IRUSR | S_IROTH) 
     return
 
 def AcquireDates(numDelta = 0):
@@ -83,7 +84,7 @@ def UpdateInbox():
         analyzeMessage = False
         if message.Class == 43:
             if message.SenderEmailType == 'EX':
-                if message.Sender.GetExchangeUser().PrimarySmtpAddress == ##########: 
+                if message.Sender.GetExchangeUser().PrimarySmtpAddress == '$$$$$$$$$$': 
                     analyzeMessage = True
         return analyzeMessage
 
@@ -92,7 +93,7 @@ def UpdateInbox():
         if message.Class == 43:
             if message.SenderEmailType == 'SMTP':
                 if isinstance(message.Sender.GetExchangeUser(), type(None)):
-                    if 'dailyoutflowsconsolidation' in message.subject.lower().replace(' ', ''):
+                    if '$$$$$$$$$$' in message.subject.lower().replace(' ', ''):
                         analyzeMessage = True
         return analyzeMessage
 
@@ -105,7 +106,7 @@ def UpdateInbox():
         moveMessage = False
         if message.Class == 43:
             if message.SenderEmailType == 'EX':
-                if 'Proposed Daily Outflows for' in message.subject:
+                if '$$$$$$$$$$' in message.subject:
                     moveMessage = True
         return moveMessage
 
@@ -113,32 +114,32 @@ def UpdateInbox():
     inbox = outlook.GetDefaultFolder(6)
 
     inboxFolders = {folder.Name for folder in inbox.Folders}
-    if ########## in inboxFolders:
-        mainFolder = inbox.Folders.Item(##########)
+    if '$$$$$$$$$$' in inboxFolders:
+        mainFolder = inbox.Folders.Item('$$$$$$$$$$')
     else:
-        inbox.Folders.Add(##########)
-        mainFolder = inbox.Folders.Item(##########)
-        print("Created Folder In Inbox Titled: ##########")
+        inbox.Folders.Add('$$$$$$$$$$')
+        mainFolder = inbox.Folders.Item('$$$$$$$$$$')
+        print("Created Folder In Inbox Titled: '$$$$$$$$$$'")
 
     mainFolders = {folder.Name for folder in mainFolder.Folders}
-    if ########## in mainFolders:
-        SAP_Folder = mainFolder.Folders.Item(##########)
+    if '$$$$$$$$$$' in mainFolders:
+        SAP_Folder = mainFolder.Folders.Item('$$$$$$$$$$')
     else:
-        mainFolder.Folders.Add(##########)
-        SAP_Folder = mainFolder.Folders.Item(##########)
-        print("Created Folder In ########## Titled: ##########")
-    if ########## in mainFolders:
-        Treas_Folder = mainFolder.Folders.Item(##########)
+        mainFolder.Folders.Add('$$$$$$$$$$')
+        SAP_Folder = mainFolder.Folders.Item('$$$$$$$$$$')
+        print("Created Folder In '$$$$$$$$$$' Titled: '$$$$$$$$$$'")
+    if '$$$$$$$$$$' in mainFolders:
+        Treas_Folder = mainFolder.Folders.Item('$$$$$$$$$$')
     else:
-        mainFolder.Folders.Add(##########)
-        Treas_Folder = mainFolder.Folders.Item(##########)
-        print("Created Folder In ########## Titled: ##########")
-    if ########## in mainFolders:
-        proposedOutflowFolder = mainFolder.Folders.Item(##########)
+        mainFolder.Folders.Add('$$$$$$$$$$')
+        Treas_Folder = mainFolder.Folders.Item('$$$$$$$$$$')
+        print("Created Folder In '$$$$$$$$$$' Titled: '$$$$$$$$$$'")
+    if '$$$$$$$$$$' in mainFolders:
+        proposedOutflowFolder = mainFolder.Folders.Item('$$$$$$$$$$')
     else:
-        mainFolder.Folders.Add(##########)
-        proposedOutflowFolder = mainFolder.Folders.Item(##########)
-        print("Created Folder In ########## Titled: ##########")
+        mainFolder.Folders.Add('$$$$$$$$$$')
+        proposedOutflowFolder = mainFolder.Folders.Item('$$$$$$$$$$')
+        print("Created Folder In '$$$$$$$$$$' Titled: '$$$$$$$$$$'")
 
     inbmessages = inbox.Items
     inbmessages.sort("[ReceivedTime]", True) 
@@ -154,17 +155,17 @@ def UpdateInbox():
             if AnalyzeSAPS4Email(inbmessage):
                 inbmessage.Unread = True ; analyzedEmail = True
                 inbmessage.Move(SAP_Folder)
-                print(f"MOVED EMAIL ({inbmessage.subject}) to ##########")
+                print(f"MOVED EMAIL ({inbmessage.subject}) to '$$$$$$$$$$'")
 
             elif AnalyzeTreasuraEmail(inbmessage):
                 inbmessage.Unread = True ; analyzedEmail = True
                 inbmessage.Move(Treas_Folder)
-                print(f"MOVED EMAIL ({inbmessage.subject}) to ##########")
+                print(f"MOVED EMAIL ({inbmessage.subject}) to '$$$$$$$$$$'")
 
             elif MoveProposedOutflowEmail(inbmessage):
                 inbmessage.Unread = True ; analyzedEmail = True
                 inbmessage.Move(proposedOutflowFolder)
-                print(f"MOVED EMAIL ({inbmessage.subject}) to ##########")
+                print(f"MOVED EMAIL ({inbmessage.subject}) to '$$$$$$$$$$'")
 
             if analyzedEmail:
                 inbmessages = inbox.Items 
@@ -218,7 +219,7 @@ def InitializeApplication():
                 print('Program Exiting Safely.')
                 sleep(2)
                 exit()
-            with open(dependenciesDir + '/DatabaseUpdateDates.txt', 'r') as f:
+            with open(dependenciesDir + '$$$$$$$$$$', 'r') as f:
                 dates = f.read()
                 datesList = dates.split(';')
                 if date.today().strftime("%m/%d/%Y") in datesList:
@@ -248,7 +249,7 @@ def InitializeApplication():
                 day = 'unknown'
                 continue
 
-            with open(dependenciesDir + '/DatabaseUpdateDates.txt', 'r') as f:
+            with open(dependenciesDir + '$$$$$$$$$$', 'r') as f:
                 dates = f.read()
                 datesList = dates.split(';')
                 if (date.today() - timedelta(newday)).strftime("%m/%d/%Y") in datesList:
@@ -295,30 +296,30 @@ def AcquireFilesFromOutlook(priorBusinessDay, currentDate, regDir, treasDir):
 
     outlook = win32_Dispatch('outlook.application').GetNamespace('MAPI')
     inbox = outlook.GetDefaultFolder(6)
-    SAP_Folder = inbox.Folders.Item(##########).Folders.Item(##########)
+    SAP_Folder = inbox.Folders.Item('$$$$$$$$$$').Folders.Item('$$$$$$$$$$')
     SAP_messages = SAP_Folder.Items
     SAP_messages.sort("[ReceivedTime]", True)
-    Treas_Folder = inbox.Folders.Item(##########).Folders.Item(##########)
+    Treas_Folder = inbox.Folders.Item('$$$$$$$$$$').Folders.Item('$$$$$$$$$$')
     Treas_messages = Treas_Folder.Items
     Treas_messages.sort("[ReceivedTime]", True)
-    proposedOutflowFolder = inbox.Folders.Item(##########).Folders.Item(##########)
+    proposedOutflowFolder = inbox.Folders.Item('$$$$$$$$$$').Folders.Item('$$$$$$$$$$')
     proposedOutflow_messages = proposedOutflowFolder.Items
     proposedOutflow_messages.sort("[ReceivedTime]", True)
 
     SAP_message = SAP_messages.GetFirst()
     for _ in range(20):
         if not isinstance(SAP_message, type(None)):
-            if ('rent' in SAP_message.subject.lower()) or ('intercompany' in SAP_message.subject.lower()):
+            if ('$$$$$$$$$$' in SAP_message.subject.lower()) or ('$$$$$$$$$$' in SAP_message.subject.lower()):
                 pass
-            elif 'saps4' and 'proposal' in SAP_message.subject.lower().replace(' ', ''):
+            elif '$$$$$$$$$$' and '$$$$$$$$$$' in SAP_message.subject.lower().replace(' ', ''):
                 if currentDate == SAP_message.SentOn.strftime("%m/%d/%Y"):
                     for attachment in SAP_message.Attachments:
                         if '.xls' in attachment.filename and HasDate(attachment.filename):
                             attachment.SaveAsFile(propDir + '\\' + attachment.filename)
                             print(f"Downloaded File:  {attachment.filename}")
-            elif 'paymentregister' in SAP_message.subject.lower().replace(' ', '') and priorBusinessDay == SAP_message.SentOn.strftime("%m/%d/%Y"):
+            elif '$$$$$$$$$$' in SAP_message.subject.lower().replace(' ', '') and priorBusinessDay == SAP_message.SentOn.strftime("%m/%d/%Y"):
                 for attachment in SAP_message.Attachments:
-                    if 'register' and '.xls' in attachment.filename.lower() and HasDate(attachment.filename):
+                    if '$$$$$$$$$$' and '.xls' in attachment.filename.lower() and HasDate(attachment.filename):
                         attachment.SaveAsFile(regDir + '\\' + attachment.filename)
                         print(f"Downloaded File:  {attachment.filename}")
 
@@ -331,13 +332,14 @@ def AcquireFilesFromOutlook(priorBusinessDay, currentDate, regDir, treasDir):
     for _ in range(5):
         if not isinstance(Treas_message, type(None)):
             if currentDate == Treas_message.SentOn.strftime("%m/%d/%Y"):
-                if 'category:outflows' in Treas_message.body.lower().replace(' ', ''):
+                if '$$$$$$$$$$' in Treas_message.body.lower().replace(' ', ''):
                     for attachment in Treas_message.Attachments:
-                        if 'outflows' and '.xls' in attachment.filename.lower():
+                        if '$$$$$$$$$$' and '.xls' in attachment.filename.lower():
                             fileName = attachment.filename[:-4] + '_' + priorBusinessDay.replace('/', "") + '.xls'
                             attachment.SaveAsFile(treasDir + '\\' + fileName)
                             outflowReportAcquired = True
                             print(f"Downloaded File:  {fileName}")
+                            print()
                             break
 
             if outflowReportAcquired:
@@ -367,11 +369,11 @@ def SAPFileDetector(directory, date, reportType):
             files_needed.append(file)
     if len(files_needed) > 0:
         return files_needed
-    else: 
-        cont = input(f"No {reportType}s Found For {date}.  Do You Wish To Continue? (y/n): ") 
+    else: #sometimes there will be no files for analysis. This could be the result of the proposals not being sent yet, or that the next business day is a holiday.
+        cont = input(f"No {reportType}s Found For {date}.  Do You Wish To Continue? (y/n): ") #want to continue if no proposals due to holiday
         if cont == 'y':
             return files_needed
-        elif cont == 'n': 
+        elif cont == 'n': #do not want to continue if the proposals have yet to be sent. Rerun the program manually after the proposals have been sent.
             print('Program Exiting Safely.')
             sleep(2)
             exit()
@@ -395,7 +397,7 @@ def TreasuraFileDetector(treasDir, treasFilenames, currentDate):
         if CheckDate(currentDate, treasDir, file):
             fileNeeded = file
     if fileNeeded == None:
-        raise FileNotFoundError('Please Wait for Incoming Data from Treasura')
+        raise FileNotFoundError('Please Wait for Incoming Data from Treasura') 
     else:
         return treasDir + '\\' + fileNeeded
 
@@ -405,7 +407,7 @@ def NameStripper(colnames):
     each label. This is done because sometimes the SAP S4 reports have random spaces in their
     column names, making them hard to work with during downstream analysis.
     '''
-    return [name.strip() for name in colnames]
+    return [name.strip() if isinstance(name, str) else 'Unknown' for name in colnames]
 
 def CompanyFilter(dataframe, companyCode, currency, TYPE = 'prop'):
     """
@@ -414,9 +416,9 @@ def CompanyFilter(dataframe, companyCode, currency, TYPE = 'prop'):
     whos transactions are concerned with different Nutrien account structures.
     """
     if TYPE == 'prop':
-        index = array(dataframe['CoCd'] == companyCode) & array(dataframe['Crcy'] == currency)
+        index = array(dataframe['$$$$$$$$$$'] == companyCode) & array(dataframe['$$$$$$$$$$'] == currency)
     elif TYPE == 'reg':
-        index = array(dataframe['Company Code'] == companyCode) & array(dataframe['Currency'] == currency)
+        index = array(dataframe['$$$$$$$$$$'] == companyCode) & array(dataframe['$$$$$$$$$$'] == currency)
     return index
 
 def PaymentErrorFilter(dataframe):
@@ -426,7 +428,7 @@ def PaymentErrorFilter(dataframe):
     with NO error message. In the database and the proposed outflows file, this filtering process
     generates the column tagged with NO_ERRORS.
     """
-    return dataframe['Error Text'].isna()
+    return dataframe['$$$$$$$$$$'].isna()
 
 def ToVisualFormat(num):
     '''
@@ -467,34 +469,40 @@ def DataAgreggator_F(companyList, currencyList, presentDayProposals, propDir, pr
         pooledPropOutflows = zeros(3, float64)
         analyzedNames = ""
         for file in presentDayProposals:
-            data = read_excel(propDir + "\\" + file) 
-            data.columns = NameStripper(data.columns) 
-            counter = 0
-            for companyCode, currency in zip(companyList, currencyList):
-                tempData = data[CompanyFilter(data, companyCode, currency)]
-                if len(tempData) > 0:
-                    if counter < 2:
-                        index = 0
-                    elif counter < 5:
-                        index = 1
-                    else:
-                        index = 2
-                    pooledPropOutflows[index] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
+            try:
+                data = read_excel(propDir + "\\" + file)
+                data.columns = NameStripper(data.columns) 
+                counter = 0
+                for companyCode, currency in zip(companyList, currencyList):
+                    tempData = data[CompanyFilter(data, companyCode, currency)]
+                    if len(tempData) > 0:
+                        if counter < 2:
+                            index = 0
+                        elif counter < 5:
+                            index = 1
+                        else:
+                            index = 2
+                        pooledPropOutflows[index] += tempData[PaymentErrorFilter(tempData)]['$$$$$$$$$$'].sum()
+                    counter += 1
 
-                counter += 1
-            analyzedNames += '\t' + file + '\n' 
+                analyzedNames += '\t' + file + '\n' 
+
+            except Exception as e:
+                print(f"ERROR analyzing {file}")
+                print(e)
+                analyzedNames += '\t' + 'ERROR analyzing: ' + file + '\n'
 
         return pooledPropOutflows, analyzedNames
 
     pooledPropOutflows, analyzedNames = PropDataScraper_F(companyList, currencyList, presentDayProposals, propDir, propFocDate) 
-    structures = ##########
+    structures = ['$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$']
     messageForEmail = "\n"
     for struc, pool in zip(structures, pooledPropOutflows):
         messageForEmail += '\t' + struc + ": " + ToVisualFormat(pool) + '\n\n'
 
     chmod(depositPath, S_IWUSR | S_IWOTH)
     DATABASE_WORKBOOK = load_workbook(depositPath)
-    supDataSheet = DATABASE_WORKBOOK['Supplementary Data']
+    supDataSheet = DATABASE_WORKBOOK['$$$$$$$$$$']
     titleCell = supDataSheet.cell(row = 1, column = 1)
     title, date = titleCell.value.split(":")
     titleCell.value = title + ":  " + propFocDate
@@ -521,28 +529,34 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
         dataForDataBase[:, [6, 7, 8]] = zeros((8, 3), dtype = float64)
 
         for file in propFlaggedFiles:
-            data = read_excel(propDir + '/' + file)
-            data.columns = NameStripper(data.columns)
-            counter = 0
-            for companyCode, currency in zip(companyList, currencyList):
-                tempData = data[CompanyFilter(data, companyCode, currency)]
-                if len(tempData) > 0:
-                    if dataForDataBase[counter, 0] == None:
-                        dataForDataBase[counter, 0] = file
-                    else:
-                        dataForDataBase[counter, 0] += " | " + file
-                    if 'EFT' in file or 'ACH' in file or 'FRTCE' in file or 'FRTUA' in file:
-                        dataForDataBase[counter, 6] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
-                    elif 'WIRE' in file:
-                        dataForDataBase[counter, 7] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
-                    elif 'SCOCA' in file or 'BMOUS' in file or 'FRTCC' in file or 'FRTUC' in file or 'CBRCC' in file:
-                        dataForDataBase[counter, 8] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
+            try:
+                data = read_excel(propDir + '/' + file)
+                data.columns = NameStripper(data.columns)
+                counter = 0
+                for companyCode, currency in zip(companyList, currencyList):
+                    tempData = data[CompanyFilter(data, companyCode, currency)]
+                    if len(tempData) > 0:
+                        if dataForDataBase[counter, 0] == None:
+                            dataForDataBase[counter, 0] = file
+                        else:
+                            dataForDataBase[counter, 0] += " | " + file
+                        if 'EFT' in file or 'ACH' in file or 'FRTCE' in file or 'FRTUA' in file:
+                            dataForDataBase[counter, 6] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
+                        elif 'WIRE' in file:
+                            dataForDataBase[counter, 7] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
+                        elif 'SCOCA' in file or 'BMOUS' in file or 'FRTCC' in file or 'FRTUC' in file or 'CBRCC' in file:
+                            dataForDataBase[counter, 8] += tempData[PaymentErrorFilter(tempData)]['Net Amount in FC'].sum()
+                        else:
+                            pass
                     else:
                         pass
-                else:
-                    pass
-                counter += 1
-            print(f"Analyzed {file} for Surveillance Database")
+                    counter += 1
+
+                print(f"Analyzed {file} for Surveillance Database")
+
+            except Exception as e:
+                print(f"ERROR analyzing {file} for Surveillance Database")
+                print(e)
 
         return dataForDataBase
 
@@ -555,7 +569,7 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
             def Filter(s):
                 return 'eft' in s.lower() or 'ach' in s.lower()
 
-            return dataframe['Payment Method Description'].apply(Filter)
+            return dataframe['$$$$$$$$$$'].apply(Filter)
 
         def Reg_CheckFilter(dataframe):
             '''
@@ -564,7 +578,7 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
             def Filter(s):
                 return 'check' in s.lower()
 
-            return dataframe['Payment Method Description'].apply(Filter)
+            return dataframe['$$$$$$$$$$'].apply(Filter)
 
         def Reg_WireFilter(dataframe):
             '''
@@ -573,32 +587,37 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
             def Filter(s):
                 return 'wire' in s.lower()
 
-            return dataframe['Payment Method Description'].apply(Filter)
+            return dataframe['$$$$$$$$$$'].apply(Filter)
 
         dataForDataBase = empty([8, 5], dtype = object)
         dataForDataBase[:, 1] = full((8,), regRecvDate, dtype = object)
         dataForDataBase[:, [2, 3, 4]] = zeros((8, 3), dtype = float64)
 
-        for file in regFlaggedFiles: 
-            data = read_excel(regDir + '/' + file, sheet_name = 2) 
-            if 'Company Code' in data.columns:
-                pass
-            else: 
-                data = read_excel(regDir + '/' + file, sheet_name = 1) 
-                assert 'Company Code' in data.columns, "'Company Code' Column Not Found in " + file
+        for file in regFlaggedFiles: #now we are analyzing registers
+            try:
+                data = read_excel(regDir + '/' + file, sheet_name = 2) #usually data is on second sheet
+                if '$$$$$$$$$$' in data.columns:
+                    pass
+                else:
+                    data = read_excel(regDir + '/' + file, sheet_name = 1) 
+                    assert '$$$$$$$$$$' in data.columns, "'$$$$$$$$$$' Column Not Found in " + file
 
-            data.columns = NameStripper(data.columns)
-            counter = 0
-            for companyCode, currency in zip(companyList, currencyList):
-                tempData = data[CompanyFilter(data, companyCode, currency, 'reg')]
-                if len(tempData) > 0:
-                    dataForDataBase[counter, 0] = file
-                    dataForDataBase[counter, 2] -= tempData[Reg_EFTACHFilter(tempData)]['Amount Paid'].sum()
-                    dataForDataBase[counter, 3] -= tempData[Reg_CheckFilter(tempData)]['Amount Paid'].sum()
-                    dataForDataBase[counter, 4] -= tempData[Reg_WireFilter(tempData)]['Amount Paid'].sum()
+                data.columns = NameStripper(data.columns)
+                counter = 0
+                for companyCode, currency in zip(companyList, currencyList):
+                    tempData = data[CompanyFilter(data, companyCode, currency, 'reg')]
+                    if len(tempData) > 0:
+                        dataForDataBase[counter, 0] = file
+                        dataForDataBase[counter, 2] -= tempData[Reg_EFTACHFilter(tempData)]['$$$$$$$$$$'].sum()
+                        dataForDataBase[counter, 3] -= tempData[Reg_CheckFilter(tempData)]['$$$$$$$$$$'].sum()
+                        dataForDataBase[counter, 4] -= tempData[Reg_WireFilter(tempData)]['$$$$$$$$$$'].sum()
+                    counter += 1
 
-                counter += 1
-            print(f"Analyzed {file} for Surveillance Database")
+                print(f"Analyzed {file} for Surveillance Database")
+
+            except Exception as e:
+                print(f"ERROR analyzing {file} for Surveillance Database")
+                print(e)
 
         return dataForDataBase
 
@@ -610,20 +629,26 @@ def DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles, 
         dataForDataBase[:, 3] = full((8,), regRecvDate, dtype = object)
         dataForDataBase[:, :3] = zeros([8, 3])
 
-        treasData = read_excel(treasFile, header = 6)
-        treasData = treasData.loc[:, ~treasData.columns.str.contains('Unnamed:')]
-        treasData = treasData[~treasData['LEDGER AMOUNT'].isna()]
-        treasData["ACCOUNT"] = treasData["ACCOUNT"].astype(int64).astype(str)
+        try:
+            treasData = read_excel(treasFile, header = 6)
+            treasData = treasData.loc[:, ~treasData.columns.str.contains('Unnamed:')]
+            treasData = treasData[~treasData['LEDGER AMOUNT'].isna()]
+            treasData["ACCOUNT"] = treasData["ACCOUNT"].astype(int64).astype(str)
 
-        subcategories = ['AP EFT', 'AP Wires', 'AP Cheques']
-        for accountIndex, accountNumber in enumerate(accountList):
-            tempData1 = treasData[treasData["ACCOUNT"] == accountNumber]
-            for subIndex, subcategory in enumerate(subcategories):
-                tempData2 = tempData1[tempData1['SUBCATEGORY'] == subcategory]
-                dataForDataBase[accountIndex, subIndex] += tempData2['LEDGER AMOUNT'].sum()
+            subcategories = ['AP EFT', 'AP Wires', 'AP Cheques']
+            for accountIndex, accountNumber in enumerate(accountList):
+                tempData1 = treasData[treasData["ACCOUNT"] == accountNumber]
+                for subIndex, subcategory in enumerate(subcategories):
+                    tempData2 = tempData1[tempData1['SUBCATEGORY'] == subcategory]
+                    dataForDataBase[accountIndex, subIndex] += tempData2['LEDGER AMOUNT'].sum()
 
-        fn = treasFile.split('\\')[-1]
-        print(f"Analyzed {fn} for Surveillance Database")
+            fn = treasFile.split('\\')[-1]
+            print(f"Analyzed {fn} for Surveillance Database")
+
+        except Exception as e:
+            print("ERROR Analyzing the Treasura Report")
+            print(e)
+            print("Has the Format of the Treasura Report Changed?")
 
         return dataForDataBase
 
@@ -640,17 +665,18 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
     regFilenames = listdir(regDir) 
     treasFilenames = listdir(treasDir) 
 
-    companyList = ##########
+    companyList = ['$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$'] 
     currencyList = ['USD', 'USD', 'CAD', 'CAD', 'CAD', 'USD', 'USD', 'USD']
-    accountList = ##########
+    accountList = ['$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$', '$$$$$$$$$$']
 
+    #Daily Outflow Proposals Program Implementation
     presentDayProposals = SAPFileDetector(propFilenames, propFocDate, 'Proposal') 
     messageForEmail, analyzedNames = DataAgreggator_F(companyList, currencyList, presentDayProposals, propDir, propFocDate) 
     print("Daily Proposed Outflows Acquired") ; print()
 
     names = []
     emailAdresses = []
-    with open(dependenciesDir + '/EmailList.txt', 'r') as f: 
+    with open(dependenciesDir + '$$$$$$$$$$', 'r') as f: 
         namesAndEmails = f.read().split('\n')
         for pair in namesAndEmails:
             name, emailAdress = pair.split(': ')
@@ -678,17 +704,21 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
         newEmail.To = email 
         newEmail.Send() 
 
+
+    #Serveillance Database Program Implementation
     propFlaggedFiles_DB = SAPFileDetector(propFilenames, priorBusinessDay, 'Proposal') 
     regFlaggedFiles = SAPFileDetector(regFilenames, priorBusinessDay, 'Register') 
     treasFile = TreasuraFileDetector(treasDir, treasFilenames, currentDate) 
     finalData = DataAgreggator_DB(companyList, currencyList, accountList, propFlaggedFiles_DB, propDir, propRecvDate_DB, regFlaggedFiles, regDir, priorBusinessDay, treasFile)
 
+    #Update the Database
     chmod(depositPath, S_IWUSR | S_IWOTH) 
     DATABASE_WORKBOOK = load_workbook(depositPath)
     dataSheet = DATABASE_WORKBOOK['Database']
     dataSheet.insert_rows(idx = 2, amount = 9)
     for j in range(finalData.shape[1]):
 
+        #Built-in formats: https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/styles/numbers.html
         cellFormat = 'General'
         if j < 2:
             pass
@@ -708,10 +738,10 @@ def ExecuteProposedOutflowsAndDatabaseUpdates(wd, propDir, regDir, treasDir, pro
     DATABASE_WORKBOOK.save(depositPath)
     chmod(depositPath, S_IRUSR | S_IROTH) 
 
-    chmod(dependenciesDir + '/DatabaseUpdateDates.txt', S_IWUSR | S_IWOTH) 
-    with open(dependenciesDir + '/DatabaseUpdateDates.txt', 'a') as f:
+    chmod(dependenciesDir + '$$$$$$$$$$', S_IWUSR | S_IWOTH) 
+    with open(dependenciesDir + '$$$$$$$$$$', 'a') as f:
         f.write(currentDate + ';') 
-    chmod(dependenciesDir + '/DatabaseUpdateDates.txt', S_IRUSR | S_IROTH) 
+    chmod(dependenciesDir + '$$$$$$$$$$', S_IRUSR | S_IROTH) 
 
     print("Surveillance Database Updated Successfully")
 
@@ -727,9 +757,9 @@ except Exception:
 if not EXIT: 
     try:
         wd = getcwd()
-        propDir = dependenciesDir + '/Payments_Proposed' 
-        regDir = dependenciesDir + '/Payments_Registered' 
-        treasDir = dependenciesDir + '/Treasura_Outflows_dloads' 
+        propDir = dependenciesDir + '$$$$$$$$$$'
+        regDir = dependenciesDir + '$$$$$$$$$$'
+        treasDir = dependenciesDir + '$$$$$$$$$$'
         propFocDate, currentDate, priorBusinessDay, propRecvDate_DB = InitializeApplication() 
         AcquireProgramLock() 
         AcquireFilesFromOutlook(priorBusinessDay, currentDate, regDir, treasDir) 
@@ -740,4 +770,4 @@ if not EXIT:
     except Exception:
         print_exc()
     finally:
-        ReleaseProgramLock() 
+        ReleaseProgramLock()
